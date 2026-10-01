@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم Veyro</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="/admin.webmanifest">
+<link rel="icon" href="icon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,Arial,sans-serif;}
+body{background:#f5f5f5;color:#222;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.login-box{background:white;padding:40px;border-radius:14px;box-shadow:0 4px 25px rgba(0,0,0,.1);width:90%;max-width:380px;text-align:center;}
+.login-box .logo{color:#d4af37;font-size:32px;font-weight:bold;margin-bottom:20px;}
+.login-box input{width:100%;padding:14px;margin:10px 0;border:1px solid #ddd;border-radius:8px;font-size:16px;}
+.login-box button{width:100%;padding:14px;margin-top:10px;border:0;background:#111;color:white;border-radius:8px;cursor:pointer;font-weight:bold;}
+.login-err{color:#c62828;margin-top:10px;font-size:14px;min-height:18px;}
+
+/* APP */
+#app{display:none;}
+header{background:#111;color:white;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{color:#d4af37;font-size:26px;font-weight:bold;}
+.logout-btn{background:#e53935;border:0;color:white;padding:9px 16px;border-radius:6px;cursor:pointer;}
+
+.tabs{display:flex;gap:8px;padding:16px 5% 0;background:white;border-bottom:1px solid #eee;flex-wrap:wrap;}
+.tab{padding:12px 20px;border:0;background:transparent;cursor:pointer;font-weight:bold;color:#777;border-bottom:3px solid transparent;}
+.tab.active{color:#111;border-color:#d4af37;}
+
+.wrap{width:94%;max-width:1300px;margin:25px auto;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:25px;}
+.stat-card{background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.stat-card .num{font-size:28px;font-weight:bold;color:#d4af37;}
+.stat-card .lbl{color:#777;margin-top:6px;font-size:14px;}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.btn{border:0;padding:11px 18px;border-radius:7px;cursor:pointer;font-weight:bold;}
+.btn-primary{background:#111;color:white;}
+.btn-gold{background:#d4af37;color:#111;}
+.btn-danger{background:#e53935;color:white;}
+.btn-sm{padding:7px 12px;font-size:13px;}
+
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+th,td{padding:12px 14px;text-align:right;border-bottom:1px solid #eee;font-size:14px;}
+th{background:#111;color:white;}
+tr:hover td{background:#fafafa;}
+.table-wrap{overflow-x:auto;}
+img.thumb{width:45px;height:45px;object-fit:cover;border-radius:6px;}
+.badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold;}
+.badge.active{background:#e6f4ea;color:#1b7a1b;}
+.badge.inactive{background:#fdecea;color:#c62828;}
+select.status-select{padding:6px;border-radius:6px;border:1px solid #ddd;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;justify-content:center;align-items:center;padding:15px;}
+.modal-box{background:white;width:95%;max-width:550px;max-height:90vh;overflow:auto;border-radius:14px;padding:25px;position:relative;}
+.close{position:absolute;left:15px;top:15px;width:32px;height:32px;border:0;border-radius:50%;background:#111;color:white;cursor:pointer;}
+.modal-box h2{margin-bottom:18px;}
+.form-row{margin-bottom:12px;}
+.form-row label{display:block;margin-bottom:6px;font-weight:bold;font-size:14px;}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:11px;border:1px solid #ddd;border-radius:7px;}
+.form-row textarea{height:70px;resize:none;}
+.form-row-inline{display:flex;gap:10px;}
+.form-row-inline .form-row{flex:1;}
+
+.order-detail-items{margin:10px 0;}
+.order-detail-items div{padding:6px 0;border-bottom:1px dashed #eee;font-size:14px;}
+
+.empty-state{text-align:center;padding:50px;color:#999;}
+
+:root{color-scheme:light;--accent:#111;--surface:#fff;--page:#f4f4f4;--line:#ddd}
+body{background:var(--page);color:#111}
+.login-box,.stat-card,.modal-box,table{border:1px solid var(--line);box-shadow:none}
+.login-box .logo,.stat-card .num,.tab.active{color:#111}
+.btn-gold,.tab.active{border-color:#111}
+.btn-gold{background:#111;color:#fff}
+.tabs{background:#fff;border-color:var(--line)}
+th{background:#111}
+.badge.active{background:#eee;color:#111}
+.logout-btn{background:#111!important;color:#fff!important}
+.login-install-btn{width:100%;padding:12px;margin-top:10px;border:1px solid #111;background:#fff;color:#111;border-radius:8px;cursor:pointer;font-weight:bold}
+:root{--ink:#111;--paper:#fff;--mist:#f4f4f2;--line:#e2e2df;--muted:#737373}
+*{font-family:'Cairo',Tahoma,Arial,sans-serif}
+body{background:var(--mist);color:var(--ink)}
+.login-wrap{background:linear-gradient(135deg,#f5f5f3,#e9e9e6)}
+.login-box{border:1px solid var(--line);border-radius:4px;padding:34px}
+.login-box .logo,.logo{color:#111}
+.login-box button{min-height:46px;border-radius:4px;background:#111}
+.tabs{position:sticky;top:68px;z-index:90;gap:0;padding-top:0}
+.tab{min-height:50px;padding:12px 18px}
+.tab.active{color:#111;border-color:#111}
+.wrap{margin-top:24px}
+.stat-card{border:1px solid var(--line);border-radius:4px;text-align:right}
+.stat-card .num{color:#111}
+.toolbar h2{font-size:23px}
+table{border:1px solid var(--line);border-radius:4px;box-shadow:none}
+th{font-size:13px;letter-spacing:0}
+td{vertical-align:middle}
+.btn,.logout-btn,.close{border-radius:4px}
+.btn-gold,.btn-primary{background:#111;color:#fff}
+.btn-danger{background:#333;color:#fff}
+.badge{border-radius:3px}
+.badge.active{background:#eee;color:#111}
+.badge.inactive{background:#e5e5e5;color:#555}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid #555;outline-offset:2px}
+@media(max-width:700px){
+    header{position:sticky;top:0;padding:11px 4%;gap:10px}
+    header .logo{font-size:18px}
+    .tabs{top:56px;overflow-x:auto;flex-wrap:nowrap;padding-inline:4%;scrollbar-width:thin}
+    .tab{flex:0 0 auto;padding:10px 13px;font-size:13px;white-space:nowrap}
+    .wrap{width:92%;margin:18px auto}
+    .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .stat-card{padding:14px}
+    .stat-card .num{font-size:23px}
+    .form-row-inline{gap:0;flex-direction:column}
+    .modal-box{padding:22px 16px;border-radius:4px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+    <div class="login-box">
+        <div class="logo">Veyro Admin</div>
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()">دخول</button>
+        <button class="login-install-btn" id="loginInstallBtn" onclick="installApp()">تثبيت تطبيق الإدارة</button>
+        <div class="login-err" id="loginErr"></div>
+    </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+    <header>
+        <div class="logo">Veyro — لوحة التحكم</div>
+        <div><button class="logout-btn" id="installBtn" style="display:none;background:#d4af37;color:#111;margin-inline-end:8px" onclick="installApp()">📲 تثبيت التطبيق</button><button class="logout-btn" onclick="logout()">تسجيل الخروج</button></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('dashboard',this)">📊 الرئيسية</button>
+        <button class="tab" onclick="switchTab('products',this)">👕 المنتجات</button>
+        <button class="tab" onclick="switchTab('discounts',this)">🏷️ أكواد الخصم</button>
+        <button class="tab" onclick="switchTab('orders',this)">📦 الطلبات</button>
+        <button class="tab" onclick="switchTab('settings',this)">الإعدادات</button>
+    </div>
+
+    <div class="wrap">
+
+        <!-- DASHBOARD -->
+        <div class="panel active" id="panel-dashboard">
+            <div class="stats-grid" id="statsGrid"></div>
+            <p style="color:#777;">مرحبًا بيك في لوحة تحكم Veyro. من هنا تقدر تضيف وتعدّل وتحذف المنتجات، تنشئ أكواد خصم، وتتابع كل الطلبات الجايالك بالاسم ورقم الهاتف والعنوان.</p>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="panel" id="panel-products">
+            <div class="toolbar">
+                <h2>المنتجات</h2>
+                <button class="btn btn-gold" onclick="openProductModal()">+ إضافة منتج جديد</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>صورة</th><th>الاسم</th><th>الفئة</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="productsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DISCOUNTS -->
+        <div class="panel" id="panel-discounts">
+            <div class="toolbar">
+                <h2>أكواد الخصم</h2>
+                <button class="btn btn-gold" onclick="openDiscountModal()">+ إنشاء كود خصم</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>الكود</th><th>النوع</th><th>القيمة</th><th>أقل قيمة طلب</th><th>الاستخدامات</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="discountsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="panel" id="panel-orders">
+            <div class="toolbar">
+                <h2>الطلبات</h2>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>رقم الطلب</th><th>الاسم</th><th>الهاتف</th><th>العنوان</th><th>الدفع</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-settings">
+            <div class="toolbar"><h2>بيانات الدعم والدفع</h2></div>
+            <div class="stat-card" style="max-width:620px;text-align:right">
+                <div class="form-row"><label>رقم الدعم</label><input id="supportPhone" type="tel" value="01015020363"></div>
+                <div class="form-row"><label>رقم فودافون كاش</label><input id="vodafonePhone" type="tel" placeholder="01xxxxxxxxx"></div>
+                <div class="form-row"><label>معرّف إنستاباي</label><input id="instapayId" placeholder="name@instapay"></div>
+                <button class="btn btn-primary" onclick="savePaymentSettings()">حفظ الإعدادات</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('productModal')">✕</button>
+        <h2 id="productModalTitle">إضافة منتج</h2>
+        <input type="hidden" id="productId">
+        <div class="form-row"><label>اسم المنتج</label><input id="pName"></div>
+        <div class="form-row-inline">
+            <div class="form-row">
+                <label>الفئة</label>
+                <select id="pCategory">
+                    <option value="tshirt">تيشيرتات</option>
+                    <option value="shirt">قمصان</option>
+                    <option value="pants">بناطيل</option>
+                    <option value="jacket">جواكت</option>
+                    <option value="hoodie">هوديز</option>
+                    <option value="short">شورتات</option>
+                    <option value="shoes">أحذية</option>
+                </select>
+            </div>
+            <div class="form-row"><label>السعر (جنيه)</label><input id="pPrice" type="number"></div>
+        </div>
+        <div class="form-row"><label>سعر الخصم (اختياري، بالجنيه)</label><input id="pSalePrice" type="number" min="0"></div>
+        <div class="form-row-inline">
+            <div class="form-row"><label>المقاسات</label><input id="pSizes" placeholder="S, M, L, XL"></div>
+            <div class="form-row"><label>الألوان</label><input id="pColors" placeholder="أسود, أبيض"></div>
+        </div>
+        <div class="form-row"><label>صورة المنتج</label>
+            <input type="file" id="pFile" accept="image/*" onchange="uploadImage(this)">
+            <input id="pImage" placeholder="أو الصق رابط صورة من النت https://..." oninput="previewImg()" style="margin-top:6px">
+            <img id="pPreview" style="display:none;max-width:130px;margin-top:8px;border-radius:8px"></div>
+        <div class="form-row"><label>الوصف</label><textarea id="pDescription"></textarea></div>
+        <div class="form-row-inline">
+            <div class="form-row"><label>المخزون</label><input id="pStock" type="number"></div>
+            <div class="form-row">
+                <label>الحالة</label>
+                <select id="pActive"><option value="true">مفعّل</option><option value="false">مخفي</option></select>
+            </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:10px;" onclick="saveProduct()">حفظ المنتج</button>
+    </div>
+</div>
+
+<!-- DISCOUNT MODAL -->
+<div class="modal" id="discountModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('discountModal')">✕</button>
+        <h2>إنشاء كود خصم</h2>
+        <input type="hidden" id="discountId">
+        <div class="form-row"><label>الكود</label><input id="dCode" placeholder="مثال: WELCOME10" style="text-transform:uppercase;"></div>
+        <div class="form-row-inline">
+            <div class="form-row">
+                <label>نوع الخصم</label>
+                <select id="dType"><option value="percentage">نسبة %</option><option value="fixed">قيمة ثابتة (جنيه)</option></select>
+            </div>
+            <div class="form-row"><label>القيمة</label><input id="dValue" type="number"></div>
+        </div>
+        <div class="form-row-inline">
+            <div class="form-row"><label>أقل قيمة طلب (اختياري)</label><input id="dMinOrder" type="number" value="0"></div>
+            <div class="form-row"><label>أقصى عدد استخدام (اختياري)</label><input id="dMaxUses" type="number" placeholder="بدون حد"></div>
+        </div>
+        <div class="form-row"><label>تاريخ الانتهاء (اختياري)</label><input id="dExpires" type="date"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:10px;" onclick="saveDiscount()">حفظ كود الخصم</button>
+    </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal" id="orderModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('orderModal')">✕</button>
+        <h2>تفاصيل الطلب</h2>
+        <div id="orderDetailBody"></div>
+    </div>
+</div>
+
+<script>
+const API = "";
+const ADMIN_STORE_KEY = "veyroAdminStore";
+let products = [], discounts = [], orders = [];
+
+function authHeaders(){
+    return {"Content-Type":"application/json"};
+}
+
+function getAdminStore(){
+    const fallback = { products: [], discounts: [], orders: [] };
+    try {
+        const raw = localStorage.getItem(ADMIN_STORE_KEY);
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        return {
+            products: Array.isArray(parsed.products) ? parsed.products : [],
+            discounts: Array.isArray(parsed.discounts) ? parsed.discounts : [],
+            orders: Array.isArray(parsed.orders) ? parsed.orders : []
+        };
+    } catch (e) {
+        return fallback;
+    }
+}
+
+function saveAdminStore(store){
+    localStorage.setItem(ADMIN_STORE_KEY, JSON.stringify(store));
+}
+
+async function saveCloudRecord(collectionName, record){
+    const response = await fetch(`/api/admin/${collectionName}/${encodeURIComponent(record.id)}`, {
+        method: "PUT", headers: authHeaders(), body: JSON.stringify(record)
+    });
+    if(!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "تعذر الحفظ");
+}
+
+async function deleteCloudRecord(collectionName, id){
+    const response = await fetch(`/api/admin/${collectionName}/${encodeURIComponent(id)}`, { method: "DELETE" });
+    if(!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "تعذر الحذف");
+}
+
+async function hydrateAdminStore(){
+    const store = getAdminStore();
+    try {
+        const response = await fetch("/api/admin/store");
+        if(!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "تعذر تحميل البيانات");
+        const next = await response.json();
+        saveAdminStore(next);
+        return next;
+    } catch (e) {
+        if (store.products.length || store.discounts.length || store.orders.length) return store;
+        try {
+            const res = await fetch("data/db.json");
+            if (!res.ok) throw new Error("db missing");
+            const data = await res.json();
+            const next = {
+                products: Array.isArray(data.products) ? data.products : [],
+                discounts: Array.isArray(data.discounts) ? data.discounts : [],
+                orders: Array.isArray(data.orders) ? data.orders : []
+            };
+            saveAdminStore(next);
+            return next;
+        } catch (fallbackError) {
+            return store;
+        }
+    }
+}
+
+async function doLogin(){
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const err = document.getElementById("loginErr");
+    err.textContent = "";
+    try{
+        const response = await fetch("/api/admin/login", {
+            method: "POST", headers: authHeaders(), body: JSON.stringify({ email, password })
+        });
+        const data = await response.json().catch(() => ({}));
+        if(!response.ok) throw Object.assign(new Error(data.error || "تعذر تسجيل الدخول"), { code: data.code });
+        showApp();
+    }catch(e){
+        const messages = {
+            "ADMIN_NOT_CONFIGURED": "بيانات دخول الإدارة غير مضبوطة على الخادم.",
+            "INVALID_CREDENTIALS": "البريد أو كلمة المرور غير صحيحة.",
+            "LOGIN_RATE_LIMIT": "محاولات كثيرة. انتظر قليلًا ثم حاول مجددًا."
+        };
+        err.textContent = messages[e.code] || e.message || "تعذر الاتصال بالخادم.";
+    }
+}
+
+async function logout(){
+    await fetch("/api/admin/logout", { method: "POST" }).catch(() => {});
+    document.getElementById("app").style.display = "none";
+    document.getElementById("loginWrap").style.display = "flex";
+}
+
+async function verifyAndShow(){
+    const response = await fetch("/api/admin/verify");
+    if(response.ok) showApp();
+    else {
+        document.getElementById("app").style.display = "none";
+        document.getElementById("loginWrap").style.display = "flex";
+    }
+}
+
+function showApp(){
+    document.getElementById("loginWrap").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    loadStats(); loadProducts(); loadDiscounts(); loadOrders(); loadPaymentSettings();
+}
+
+function switchTab(name, el){
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    el.classList.add("active");
+    document.getElementById("panel-"+name).classList.add("active");
+}
+
+function closeModal(id){ document.getElementById(id).style.display = "none"; }
+
+/* ---------------- DASHBOARD ---------------- */
+async function loadStats(){
+    const store = await hydrateAdminStore();
+    const totalOrders = store.orders.length;
+    const totalRevenue = store.orders.reduce((sum,o)=>sum + (Number(o.total) || 0), 0);
+    const pendingOrders = store.orders.filter(o => o.status === "قيد المراجعة").length;
+    const totalProducts = store.products.length;
+    const totalDiscounts = store.discounts.length;
+    document.getElementById("statsGrid").innerHTML = `
+        <div class="stat-card"><div class="num">${totalOrders}</div><div class="lbl">إجمالي الطلبات</div></div>
+        <div class="stat-card"><div class="num">${totalRevenue}</div><div class="lbl">إجمالي الإيرادات (جنيه)</div></div>
+        <div class="stat-card"><div class="num">${pendingOrders}</div><div class="lbl">طلبات قيد المراجعة</div></div>
+        <div class="stat-card"><div class="num">${totalProducts}</div><div class="lbl">عدد المنتجات</div></div>
+        <div class="stat-card"><div class="num">${totalDiscounts}</div><div class="lbl">أكواد الخصم</div></div>
+    `;
+}
+
+/* ---------------- PRODUCTS ---------------- */
+async function loadProducts(){
+    const store = await hydrateAdminStore();
+    products = store.products || [];
+    const body = document.getElementById("productsBody");
+    body.innerHTML = products.map(p=>`
+        <tr>
+            <td><img class="thumb" src="${esc(p.image)}"></td>
+            <td>${esc(p.name)}</td>
+            <td>${esc(p.categoryName)}</td>
+            <td>${p.salePrice && Number(p.salePrice) < Number(p.price) ? `<s>${p.price}</s> ${p.salePrice}` : p.price} جنيه</td>
+            <td>${p.stock}</td>
+            <td><span class="badge ${p.active?'active':'inactive'}">${p.active?'مفعّل':'مخفي'}</span></td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="editProduct(${p.id})">تعديل</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">حذف</button>
+            </td>
+        </tr>
+    `).join("") || `<tr><td colspan="7" class="empty-state">لا توجد منتجات</td></tr>`;
+}
+
+function openProductModal(){
+    document.getElementById("productModalTitle").innerText = "إضافة منتج";
+    document.getElementById("productId").value = "";
+    document.getElementById("pName").value = "";
+    document.getElementById("pCategory").value = "tshirt";
+    document.getElementById("pPrice").value = "";
+    document.getElementById("pSalePrice").value = "";
+    document.getElementById("pSizes").value = "S, M, L, XL";
+    document.getElementById("pColors").value = "أسود, أبيض";
+    document.getElementById("pImage").value = "";
+    document.getElementById("pDescription").value = "";
+    document.getElementById("pStock").value = 20;
+    document.getElementById("pActive").value = "true";
+    document.getElementById("productModal").style.display = "flex"; previewImg();
+}
+
+function editProduct(id){
+    const p = products.find(x=>x.id===id);
+    if(!p) return;
+    document.getElementById("productModalTitle").innerText = "تعديل منتج";
+    document.getElementById("productId").value = p.id;
+    document.getElementById("pName").value = p.name;
+    document.getElementById("pCategory").value = p.category;
+    document.getElementById("pPrice").value = p.price;
+    document.getElementById("pSalePrice").value = p.salePrice || "";
+    document.getElementById("pSizes").value = (p.sizes || []).join(", ");
+    document.getElementById("pColors").value = (p.colors || []).join(", ");
+    document.getElementById("pImage").value = p.image;
+    document.getElementById("pDescription").value = p.description || "";
+    document.getElementById("pStock").value = p.stock;
+    document.getElementById("pActive").value = String(p.active);
+    document.getElementById("productModal").style.display = "flex"; previewImg();
+}
+
+const categoryNames = {tshirt:"تيشيرتات",shirt:"قمصان",pants:"بناطيل",jacket:"جواكت",hoodie:"هوديز",short:"شورتات",shoes:"أحذية"};
+
+async function saveProduct(){
+    const id = document.getElementById("productId").value;
+    const category = document.getElementById("pCategory").value;
+    const body = {
+        id: id ? Number(id) : Date.now(),
+        name: document.getElementById("pName").value.trim(),
+        category, categoryName: categoryNames[category],
+        price: Number(document.getElementById("pPrice").value),
+        salePrice: Number(document.getElementById("pSalePrice").value) || null,
+        sizes: document.getElementById("pSizes").value.split(/[,،]/).map(value => value.trim()).filter(Boolean),
+        colors: document.getElementById("pColors").value.split(/[,،]/).map(value => value.trim()).filter(Boolean),
+        image: document.getElementById("pImage").value.trim(),
+        description: document.getElementById("pDescription").value.trim(),
+        stock: Number(document.getElementById("pStock").value),
+        active: document.getElementById("pActive").value === "true",
+    };
+    if(!body.name || !body.price || (body.salePrice && body.salePrice >= body.price)){ alert("تحقق من الاسم والسعر، ويجب أن يكون سعر الخصم أقل من السعر الأصلي"); return; }
+
+    const store = getAdminStore();
+    try { await saveCloudRecord("products", body); }
+    catch(e) { alert("لم يُحفظ المنتج على الخادم. تحقق من اتصال الإنترنت ثم حاول مجددًا."); return; }
+    if (id) {
+        const idx = store.products.findIndex(p => Number(p.id) === Number(id));
+        if (idx >= 0) store.products[idx] = { ...store.products[idx], ...body };
+    } else {
+        store.products.push(body);
+    }
+    saveAdminStore(store);
+    closeModal("productModal");
+    loadProducts(); loadStats();
+}
+
+async function deleteProduct(id){
+    if(!confirm("متأكد إنك عايز تحذف المنتج ده؟")) return;
+    const store = getAdminStore();
+    try { await deleteCloudRecord("products", id); }
+    catch(e) { alert("تعذر حذف المنتج من قاعدة البيانات."); return; }
+    store.products = store.products.filter(p => Number(p.id) !== Number(id));
+    saveAdminStore(store);
+    loadProducts(); loadStats();
+}
+
+/* ---------------- DISCOUNTS ---------------- */
+async function loadDiscounts(){
+    const store = await hydrateAdminStore();
+    discounts = store.discounts || [];
+    const body = document.getElementById("discountsBody");
+    body.innerHTML = discounts.map(d=>`
+        <tr>
+            <td><b>${esc(d.code)}</b></td>
+            <td>${d.type==='percentage'?'نسبة %':'قيمة ثابتة'}</td>
+            <td>${d.value}${d.type==='percentage'?'%':' جنيه'}</td>
+            <td>${d.minOrder||0} جنيه</td>
+            <td>${d.usedCount||0}${d.maxUses?' / '+d.maxUses:''}</td>
+            <td><span class="badge ${d.active?'active':'inactive'}">${d.active?'مفعّل':'موقّف'}</span></td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="toggleDiscountActive(${d.id}, ${!d.active})">${d.active?'إيقاف':'تفعيل'}</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteDiscount(${d.id})">حذف</button>
+            </td>
+        </tr>
+    `).join("") || `<tr><td colspan="7" class="empty-state">لا توجد أكواد خصم</td></tr>`;
+}
+
+function openDiscountModal(){
+    document.getElementById("dCode").value = "";
+    document.getElementById("dType").value = "percentage";
+    document.getElementById("dValue").value = "";
+    document.getElementById("dMinOrder").value = 0;
+    document.getElementById("dMaxUses").value = "";
+    document.getElementById("dExpires").value = "";
+    document.getElementById("discountModal").style.display = "flex";
+}
+
+async function saveDiscount(){
+    const body = {
+        id: Date.now(),
+        code: document.getElementById("dCode").value.trim().toUpperCase(),
+        type: document.getElementById("dType").value,
+        value: Number(document.getElementById("dValue").value),
+        minOrder: Number(document.getElementById("dMinOrder").value) || 0,
+        maxUses: document.getElementById("dMaxUses").value ? Number(document.getElementById("dMaxUses").value) : null,
+        expiresAt: document.getElementById("dExpires").value ? new Date(document.getElementById("dExpires").value).toISOString() : null,
+        active: true,
+        usedCount: 0
+    };
+    if(!body.code || !body.value){ alert("الكود والقيمة مطلوبين"); return; }
+    const store = getAdminStore();
+    try { await saveCloudRecord("discounts", body); }
+    catch(e) { alert("لم يُحفظ كود الخصم على قاعدة البيانات."); return; }
+    store.discounts.push(body);
+    saveAdminStore(store);
+    closeModal("discountModal");
+    loadDiscounts(); loadStats();
+}
+
+async function toggleDiscountActive(id, active){
+    const store = getAdminStore();
+    const idx = store.discounts.findIndex(d => Number(d.id) === Number(id));
+    if(idx >= 0){
+        try { await saveCloudRecord("discounts", { ...store.discounts[idx], active }); }
+        catch(e) { alert("تعذر تحديث كود الخصم."); return; }
+    }
+    if (idx >= 0) store.discounts[idx].active = active;
+    saveAdminStore(store);
+    loadDiscounts();
+}
+
+async function deleteDiscount(id){
+    if(!confirm("متأكد إنك عايز تحذف كود الخصم ده؟")) return;
+    const store = getAdminStore();
+    try { await deleteCloudRecord("discounts", id); }
+    catch(e) { alert("تعذر حذف كود الخصم."); return; }
+    store.discounts = store.discounts.filter(d => Number(d.id) !== Number(id));
+    saveAdminStore(store);
+    loadDiscounts(); loadStats();
+}
+
+/* ---------------- ORDERS ---------------- */
+const statusOptions = ["قيد المراجعة","تم التأكيد","جاري التجهيز","تم الشحن","تم التسليم","ملغي"];
+
+async function loadOrders(){
+    const store = await hydrateAdminStore();
+    orders = store.orders || [];
+    const body = document.getElementById("ordersBody");
+    const payLabels = {cash:"عند الاستلام", vodafone:"فودافون كاش", instapay:"إنستاباي"};
+    body.innerHTML = orders.map(o=>`
+        <tr>
+            <td><a href="#" onclick="showOrderDetail('${o.id}');return false;">#${o.orderNumber}</a></td>
+            <td>${esc(o.customerName)}</td>
+            <td>${esc(o.customerPhone)}</td>
+            <td>${esc((o.customerAddress||"").slice(0,25))}${(o.customerAddress||"").length>25?'...':''}</td>
+            <td>${payLabels[o.paymentMethod]||o.paymentMethod}<br><small>${esc(o.paymentStatus||"")}</small></td>
+            <td>${o.total} جنيه</td>
+            <td>
+                <select class="status-select" onchange="updateStatus('${o.id}', this.value)">
+                    ${statusOptions.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join("")}
+                </select>
+            </td>
+            <td>${new Date(o.createdAt).toLocaleString("ar-EG")}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="deleteOrderRow('${o.id}')">حذف</button></td>
+        </tr>
+    `).join("") || `<tr><td colspan="9" class="empty-state">لا توجد طلبات حتى الآن</td></tr>`;
+}
+
+function showOrderDetail(id){
+    const o = orders.find(x=>x.id===id);
+    if(!o) return;
+    const payLabels = {cash:"الدفع عند الاستلام", vodafone:"فودافون كاش", instapay:"إنستاباي"};
+    document.getElementById("orderDetailBody").innerHTML = `
+        <p><b>رقم الطلب:</b> #${o.orderNumber}</p>
+        <p><b>الاسم:</b> ${esc(o.customerName)}</p>
+        <p><b>رقم الهاتف:</b> ${esc(o.customerPhone)}</p>
+        <p><b>العنوان:</b> ${esc(o.customerAddress)}</p>
+        <p><b>طريقة الدفع:</b> ${payLabels[o.paymentMethod]||o.paymentMethod}</p>
+        <p><b>الحالة:</b> ${esc(o.status)}</p>
+        ${o.paymentRef?`<p><b>رقم عملية التحويل:</b> ${esc(o.paymentRef)}</p>`:''}
+        <p><b>حالة الدفع:</b> ${esc(o.paymentStatus||'-')} ${o.paymentMethod!=='cash'&&o.paymentStatus!=='تم استلام الدفع'?`<button class="btn btn-gold btn-sm" onclick="markPaid('${o.id}')">✅ تأكيد استلام الدفع</button>`:''}</p>
+        <hr style="margin:12px 0;">
+        <p><b>المنتجات:</b></p>
+        <div class="order-detail-items">
+            ${(o.items||[]).map(i=>`<div>${esc(i.name)} ${i.size?'('+esc(i.size)+')':''} ${i.color?'- '+esc(i.color):''} × ${i.quantity} = ${i.lineTotal} جنيه</div>`).join("")}
+        </div>
+        <hr style="margin:12px 0;">
+        <p>الإجمالي الفرعي: ${o.subtotal} جنيه</p>
+        ${o.discountCode ? `<p>كود الخصم (${esc(o.discountCode)}): -${o.discountAmount} جنيه</p>` : ""}
+        <p style="font-size:20px;font-weight:bold;margin-top:8px;">الإجمالي: ${o.total} جنيه</p>
+    `;
+    document.getElementById("orderModal").style.display = "flex";
+}
+
+async function updateStatus(id, status){
+    const store = getAdminStore();
+    const idx = store.orders.findIndex(o => String(o.id) === String(id));
+    if(idx >= 0){
+        try { await saveCloudRecord("orders", { ...store.orders[idx], status }); }
+        catch(e) { alert("تعذر تحديث الطلب."); await loadOrders(); return; }
+    }
+    if (idx >= 0) store.orders[idx].status = status;
+    saveAdminStore(store);
+    loadOrders(); loadStats();
+}
+
+async function deleteOrderRow(id){
+    if(!confirm("متأكد إنك عايز تحذف الطلب ده؟")) return;
+    const store = getAdminStore();
+    try { await deleteCloudRecord("orders", id); }
+    catch(e) { alert("تعذر حذف الطلب."); return; }
+    store.orders = store.orders.filter(o => String(o.id) !== String(id));
+    saveAdminStore(store);
+    loadOrders(); loadStats();
+}
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function previewImg(){const v=document.getElementById("pImage").value.trim(),i=document.getElementById("pPreview");i.src=v;i.style.display=v?"block":"none";}
+function shrink(f){return new Promise((ok,no)=>{const img=new Image();img.onload=()=>{const s=Math.min(1,1200/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.85));};img.onerror=no;img.src=URL.createObjectURL(f);});}
+async function uploadImage(inp){
+    const f=inp.files[0]; if(!f) return;
+    try{
+        const data=await shrink(f);
+        const store = getAdminStore();
+        const res = await fetch(API+"/api/admin/upload",{method:"POST",headers:authHeaders(),body:JSON.stringify({data})});
+        if(!res.ok){
+            const url = data.startsWith("data:image") ? data : "";
+            if(url){ document.getElementById("pImage").value = url; previewImg(); }
+            else { alert("تعذر رفع الصورة، جرّب صورة تانية"); }
+            return;
+        }
+        const d=await res.json().catch(() => ({}));
+        document.getElementById("pImage").value = d.url || data; previewImg();
+    }catch(e){alert("تعذر قراءة الصورة، جرّب صورة تانية");}
+    inp.value="";
+}
+async function markPaid(id){
+    const store = getAdminStore();
+    const idx = store.orders.findIndex(o => String(o.id) === String(id));
+    if(idx >= 0){
+        try { await saveCloudRecord("orders", { ...store.orders[idx], paymentStatus: "تم استلام الدفع" }); }
+        catch(e) { alert("تعذر تحديث حالة الدفع."); return; }
+    }
+    if (idx >= 0) store.orders[idx].paymentStatus = "تم استلام الدفع";
+    saveAdminStore(store);
+    await loadOrders(); showOrderDetail(id);
+}
+async function loadPaymentSettings(){
+    const cached = JSON.parse(localStorage.getItem("veyroPaymentSettings") || "{}");
+    document.getElementById("supportPhone").value = cached.supportPhone || "01015020363";
+    document.getElementById("vodafonePhone").value = cached.vodafone || "";
+    document.getElementById("instapayId").value = cached.instapay || "";
+    try{
+        const response = await fetch("/api/admin/settings");
+        if(!response.ok) return;
+        const settings = await response.json();
+        localStorage.setItem("veyroPaymentSettings", JSON.stringify(settings));
+        document.getElementById("supportPhone").value = settings.supportPhone || "01015020363";
+        document.getElementById("vodafonePhone").value = settings.vodafone || "";
+        document.getElementById("instapayId").value = settings.instapay || "";
+    }catch(e){}
+}
+async function savePaymentSettings(){
+    const settings = {
+        id: "payment",
+        supportPhone: document.getElementById("supportPhone").value.trim(),
+        vodafone: document.getElementById("vodafonePhone").value.trim(),
+        instapay: document.getElementById("instapayId").value.trim()
+    };
+    try{
+        await saveCloudRecord("settings", settings);
+        localStorage.setItem("veyroPaymentSettings", JSON.stringify(settings));
+        alert("تم حفظ الإعدادات");
+    }catch(e){ alert("تعذر حفظ الإعدادات على الخادم. تحقق من اتصال الإنترنت ثم حاول مجددًا."); }
+}
+let deferredInstall=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;document.getElementById("installBtn").style.display="inline-block";});
+async function installApp(){
+    if(!deferredInstall){alert("من قائمة المتصفح اختر تثبيت التطبيق أو إضافة إلى الشاشة الرئيسية.");return;}
+    deferredInstall.prompt();
+    await deferredInstall.userChoice;
+    deferredInstall=null;
+    document.getElementById("installBtn").style.display="none";
+}
+if("serviceWorker" in navigator) navigator.serviceWorker.register("/app-sw.js").catch(()=>{});
+verifyAndShow();
+</script>
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veyro</title>
+<link rel="icon" href="/logo-icon.svg">
+<link rel="manifest" href="/store.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,Arial,sans-serif;}
+body{background:#f5f5f5;color:#222;}
+
+header{background:#111;color:white;padding:16px 6%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1000;}
+.logo{color:#d4af37;font-size:30px;font-weight:bold;letter-spacing:2px;}
+nav{display:flex;gap:20px;}
+nav a{color:white;text-decoration:none;}
+nav a:hover{color:#d4af37;}
+.header-buttons{display:flex;gap:8px;}
+.header-btn{border:0;background:#d4af37;padding:10px 14px;border-radius:7px;cursor:pointer;font-weight:bold;}
+
+.hero{min-height:470px;background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.62)),url("https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1600&q=80") center/cover;display:flex;align-items:center;justify-content:center;text-align:center;color:white;}
+.hero h1{font-size:60px;color:#d4af37;margin-bottom:15px;}
+.hero p{font-size:21px;margin-bottom:25px;}
+.hero button{border:0;background:#d4af37;padding:15px 35px;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer;}
+
+.container{width:90%;max-width:1400px;margin:55px auto;}
+.title{text-align:center;margin-bottom:30px;}
+.title h2{font-size:36px;}
+.title p{color:#777;margin-top:8px;}
+
+.search{display:flex;justify-content:center;margin-bottom:25px;}
+.search input{width:600px;max-width:100%;padding:15px 20px;border:1px solid #ddd;border-radius:30px;outline:none;font-size:16px;}
+
+.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-bottom:35px;}
+.filters button{border:0;padding:11px 18px;border-radius:25px;background:#222;color:white;cursor:pointer;}
+.filters button:hover,.filters button.active{background:#d4af37;color:#111;}
+
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:25px;}
+.product{background:white;border-radius:13px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);transition:.3s;}
+.product:hover{transform:translateY(-7px);}
+.product-image{height:280px;position:relative;overflow:hidden;}
+.product-image img{width:100%;height:100%;object-fit:cover;transition:.4s;}
+.product:hover img{transform:scale(1.05);}
+.favorite{position:absolute;top:12px;left:12px;width:40px;height:40px;border:0;border-radius:50%;background:white;cursor:pointer;font-size:20px;}
+.favorite.active{color:red;}
+.out-of-stock{position:absolute;inset:0;background:rgba(0,0,0,.55);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;}
+.product-info{padding:18px;}
+.product-info h3{margin-bottom:8px;}
+.category{color:#888;font-size:14px;margin-bottom:10px;}
+.rating{color:#f3b400;margin-bottom:10px;}
+.price{color:#bd941d;font-size:21px;font-weight:bold;margin-bottom:15px;}
+.old-price{color:#999;text-decoration:line-through;font-size:15px;margin-left:8px;}
+.product-buttons{display:flex;gap:7px;}
+.details,.add{flex:1;padding:11px;border-radius:6px;cursor:pointer;border:0;}
+.details{background:white;border:1px solid #111;}
+.add{background:#111;color:white;}
+.add:hover{background:#d4af37;color:#111;}
+.add:disabled{background:#ccc;cursor:not-allowed;}
+
+.about{background:#111;color:white;text-align:center;padding:65px 20px;}
+.about h2{color:#d4af37;margin-bottom:15px;}
+.about p{max-width:750px;margin:auto;line-height:2;color:#ddd;}
+
+footer{background:#050505;color:#aaa;text-align:center;padding:25px;}
+footer a{color:#d4af37;text-decoration:none;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;justify-content:center;align-items:center;padding:15px;}
+.modal-box{background:white;width:95%;max-width:650px;max-height:90vh;overflow:auto;border-radius:15px;padding:25px;position:relative;}
+.close{position:absolute;left:15px;top:15px;width:35px;height:35px;border:0;border-radius:50%;background:#111;color:white;cursor:pointer;}
+
+.details-content{display:grid;grid-template-columns:1fr 1fr;gap:25px;}
+.details-content img{width:100%;border-radius:10px;}
+.select-box{margin:15px 0;}
+.select-box label{display:block;margin-bottom:7px;font-weight:bold;}
+.select-box select{width:100%;padding:12px;}
+.big-add{width:100%;padding:14px;background:#111;color:white;border:0;border-radius:7px;cursor:pointer;}
+
+.cart-item{display:flex;align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid #ddd;}
+.cart-item img{width:75px;height:75px;object-fit:cover;border-radius:8px;}
+.cart-info{flex:1;}
+.cart-info h4{margin-bottom:7px;}
+.cart-price{color:#bd941d;font-weight:bold;}
+.quantity{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.quantity button{width:30px;height:30px;border:0;background:#222;color:white;cursor:pointer;border-radius:4px;}
+.remove{background:#e53935;color:white;border:0;padding:8px;border-radius:5px;cursor:pointer;}
+
+.discount-box{display:flex;gap:8px;margin:20px 0;}
+.discount-box input{flex:1;padding:12px;border:1px solid #ddd;border-radius:7px;}
+.discount-box button{padding:0 18px;border:0;background:#111;color:white;border-radius:7px;cursor:pointer;}
+.discount-msg{margin-top:8px;font-size:14px;}
+.discount-msg.ok{color:#1b7a1b;}
+.discount-msg.err{color:#c62828;}
+
+.totals-line{display:flex;justify-content:space-between;padding:6px 0;color:#555;}
+.totals-line.grand{font-size:22px;font-weight:bold;color:#111;border-top:2px solid #eee;margin-top:10px;padding-top:14px;}
+
+.checkout{width:100%;padding:14px;border:0;background:#d4af37;font-weight:bold;border-radius:7px;cursor:pointer;}
+.empty{text-align:center;padding:40px;color:#777;}
+
+.checkout-form input,.checkout-form textarea{width:100%;padding:13px;margin:8px 0;border:1px solid #ddd;border-radius:7px;}
+.checkout-form textarea{height:90px;resize:none;}
+
+.payment-methods{margin:15px 0;}
+.payment-methods label{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:8px;cursor:pointer;}
+.payment-methods label.selected{border-color:#d4af37;background:#fffaf0;}
+.payment-note{background:#f5f5f5;padding:12px;border-radius:8px;font-size:14px;color:#555;margin:10px 0;display:none;}
+
+.submit{width:100%;padding:14px;border:0;background:#111;color:white;border-radius:7px;cursor:pointer;}
+.submit:disabled{background:#999;cursor:not-allowed;}
+
+.order-success{text-align:center;padding:20px;}
+.order-success .num{font-size:30px;color:#d4af37;font-weight:bold;margin:12px 0;}
+
+.loading{text-align:center;padding:60px;color:#999;font-size:18px;}
+
+@media(max-width:700px){
+    header{flex-direction:column;gap:15px;}
+    nav{flex-wrap:wrap;justify-content:center;}
+    .hero h1{font-size:42px;}
+    .details-content{grid-template-columns:1fr;}
+}
+
+:root{--gold:#c9a24a;--ink:#0e0e10}
+*{font-family:'Cairo',Tahoma,Arial,sans-serif}
+body{background:#faf8f4}
+header{background:rgba(14,14,16,.92);backdrop-filter:blur(10px);box-shadow:0 2px 20px rgba(0,0,0,.25)}
+.logo img{display:block}
+.header-btn{background:var(--gold);border-radius:24px;padding:9px 16px}
+.hero{min-height:580px;background:linear-gradient(120deg,rgba(0,0,0,.78),rgba(0,0,0,.3)),url("https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1600&q=80") center/cover}
+.hero p{letter-spacing:.5px}
+.hero button{background:var(--gold);border-radius:40px;padding:15px 44px;transition:.25s}
+.hero button:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(201,162,74,.4)}
+.title h2::after{content:"";display:block;width:60px;height:3px;background:var(--gold);margin:12px auto 0;border-radius:3px}
+.search input{box-shadow:0 4px 18px rgba(0,0,0,.06)}
+.filters button{background:#fff;color:#222;border:1px solid #e4e0d8;transition:.2s}
+.filters button:hover,.filters button.active{background:var(--ink);color:var(--gold);border-color:var(--ink)}
+.product{border-radius:18px;box-shadow:0 6px 24px rgba(0,0,0,.07)}
+.product:hover{box-shadow:0 14px 34px rgba(0,0,0,.14)}
+.product-image{height:320px}
+.price{color:var(--gold)}
+.details,.add{border-radius:30px}
+.add{background:var(--ink)}.add:hover{background:var(--gold)}
+.about{background:linear-gradient(135deg,#0e0e10,#242428)}
+.modal{backdrop-filter:blur(4px)}
+.modal-box{border-radius:20px}
+.checkout,.submit,.big-add{border-radius:30px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:30px;z-index:9999;box-shadow:0 8px 25px rgba(0,0,0,.3);animation:tin .3s}
+@keyframes tin{from{opacity:0;transform:translate(-50%,12px)}}
+[dir=ltr] .favorite{left:auto;right:12px}[dir=ltr] .close{left:auto;right:15px}
+@media(max-width:700px){.product-image{height:240px}.hero{min-height:440px}}
+
+:root{color-scheme:light;--gold:#111;--ink:#111}
+body{background:#fff;color:#111}
+header,.about,footer{background:#111;color:#fff}
+.hero button,.header-btn,.checkout,.submit,.big-add,.add{background:#111;color:#fff}
+.hero button:hover,.add:hover{background:#333;color:#fff}
+.filters button:hover,.filters button.active{background:#111;color:#fff;border-color:#111}
+.price{color:#111}
+.payment-methods label.selected{border-color:#111;background:#f4f4f4}
+.product{border:1px solid #e5e5e5;border-radius:8px;box-shadow:none}
+.modal-box{border-radius:8px}
+.support-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:#fff;text-decoration:underline;text-underline-offset:3px}
+:root{--ink:#111;--paper:#fff;--mist:#f4f4f2;--line:#e4e4e1;--muted:#737373;--gold:#111}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Cairo',sans-serif}
+header{min-height:76px;padding:12px max(4vw,20px);gap:20px;background:#111;box-shadow:none}
+.logo{color:#fff}
+nav a{font-size:14px;font-weight:600;transition:opacity .2s}
+nav a:hover{color:#fff;opacity:.65}
+.header-buttons{gap:6px}
+.header-btn{min-height:42px;padding:9px 13px;border:1px solid #444;border-radius:4px;background:#111;color:#fff}
+.header-btn:hover{background:#fff;color:#111}
+.hero{min-height:min(680px,72vh);background-image:linear-gradient(90deg,rgba(0,0,0,.68),rgba(0,0,0,.08)),url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1800&q=85');background-position:center 42%;justify-content:flex-start;text-align:right;padding:clamp(32px,8vw,120px);}
+.hero>div{max-width:620px;animation:hero-in .7s ease-out both}
+.hero img{width:min(220px,54vw)!important;margin:0 0 12px!important}
+.hero h1{max-width:560px;margin:0 0 14px;color:#fff;font-size:clamp(32px,5vw,64px);line-height:1.2}
+.hero p{max-width:450px;color:#eee;font-size:17px;line-height:1.9}
+.hero button{min-height:50px;padding:12px 26px;border:1px solid #fff;border-radius:4px;background:#fff;color:#111;font-size:15px;transition:background .2s,color .2s}
+.hero button:hover{transform:none;background:transparent;color:#fff;box-shadow:none}
+.container{width:min(1320px,92vw);margin:64px auto}
+.title{text-align:right;margin-bottom:24px}
+.title h2{font-size:30px}
+.title h2::after{display:none}
+.title p{color:var(--muted)}
+.search{justify-content:flex-start;gap:10px;margin-bottom:18px}
+.search input,.search select{min-height:48px;border:1px solid var(--line);border-radius:4px;background:#fff;box-shadow:none;font-size:15px}
+.search input{width:min(680px,100%)}
+.search select{padding:0 14px;color:#222}
+.filters{justify-content:flex-start;gap:8px;margin:0 0 14px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}
+.filters button{flex:0 0 auto;border:1px solid var(--line);border-radius:4px;background:#fff;color:#222}
+.filters button:hover,.filters button.active{background:#111;color:#fff;border-color:#111}
+.results-count{min-height:24px;margin:0 0 14px;color:var(--muted);font-size:13px}
+.products{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.product{border:1px solid var(--line);border-radius:4px;background:#fff;box-shadow:none;transition:border-color .2s,transform .2s}
+.product:hover{transform:translateY(-3px);border-color:#aaa;box-shadow:none}
+.product-image{height:auto;aspect-ratio:4/5;background:var(--mist)}
+.product-image img{display:block}
+.favorite{width:38px;height:38px;box-shadow:0 1px 6px #0002}
+.product-info{padding:16px}
+.product-info h3{font-size:16px}
+.category{color:var(--muted)}
+.rating{color:#111;font-size:13px}
+.price{font-size:18px}
+.old-price{color:#888}
+.details,.add{min-height:42px;border-radius:4px}
+.details{background:#fff}
+.add,.add:hover{background:#111;color:#fff}
+.about{padding:64px 20px;background:#111}
+.about h2{color:#fff}
+.about p{color:#ccc}
+footer{padding:26px 20px;background:#080808}
+.modal{padding:18px;background:rgba(0,0,0,.72)}
+.modal-box{border:1px solid var(--line);border-radius:6px;box-shadow:0 16px 50px #0003}
+.checkout,.submit,.big-add{min-height:48px;border-radius:4px;background:#111;color:#fff}
+.checkout:hover,.submit:hover,.big-add:hover{background:#333}
+.payment-methods label.selected{border-color:#111;background:#f2f2f2}
+.order-route-note{margin:10px 0;color:#555;font-size:13px;line-height:1.7}
+.cart-item img{border-radius:4px}
+.cart-price{color:#111}
+.remove{border-radius:4px}
+@keyframes hero-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.products{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{min-height:520px}}
+@media(max-width:650px){header{gap:10px;padding:12px 4vw}.logo img{height:38px}.header-btn{min-height:38px;padding:7px 9px;font-size:13px}.hero{min-height:470px;padding:28px 7vw;background-position:58% center}.hero h1{font-size:36px}.hero p{font-size:15px}.container{margin:42px auto}.title h2{font-size:25px}.search{flex-direction:column}.search input,.search select{width:100%}.filters{margin-inline:-4vw;padding-inline:4vw}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.product-image{aspect-ratio:3/4}.product-info{padding:12px}.product-info h3{font-size:14px}.details,.add{padding:9px 6px;font-size:13px}.details-content{grid-template-columns:1fr}.modal-box{padding:22px 16px}}
+@media(max-width:380px){.products{grid-template-columns:1fr}.product-image{aspect-ratio:4/3}}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <a class="logo" href="#home"><img src="/logo.svg" alt="Veyro" height="46"></a>
+    <nav>
+        <a href="#home">الرئيسية</a>
+        <a href="#products">المنتجات</a>
+        <a href="#about">عن Veyro</a>
+    </nav>
+    <div class="header-buttons">
+        <button class="header-btn" id="installStoreBtn" style="display:none" onclick="installStoreApp()">تثبيت</button>
+        <button class="header-btn" id="langBtn" onclick="toggleLang()">EN</button>
+        <button class="header-btn" onclick="openFavorites()">❤️ <span id="favCount">0</span></button>
+        <button class="header-btn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+    </div>
+</header>
+
+<section class="hero" id="home">
+    <div>
+        <img src="/logo.svg" alt="Veyro" style="width:min(340px,70vw);margin-bottom:18px">
+        <h1>قطع يومية، حضور مختلف</h1>
+        <p>اختيارات رجالي بتفاصيل بسيطة وجودة تعيش معاك.</p>
+        <button onclick="scrollProducts()">تسوق الآن</button>
+    </div>
+</section>
+
+<section class="container" id="products">
+    <div class="title">
+        <h2>منتجات Veyro</h2>
+        <p>اختار القطعة المناسبة ليك</p>
+    </div>
+
+    <div class="search">
+        <input id="search" type="text" placeholder="🔍 ابحث عن منتج..." oninput="searchProducts()">
+        <select id="sortSelect" aria-label="ترتيب المنتجات" onchange="sortProducts(this.value)">
+            <option value="featured">ترتيب حسب الاختيار</option>
+            <option value="price-asc">السعر: الأقل أولًا</option>
+            <option value="price-desc">السعر: الأعلى أولًا</option>
+            <option value="name">الاسم</option>
+        </select>
+    </div>
+
+    <div class="filters">
+        <button class="active" onclick="filterProducts('all',this)">الكل</button>
+        <button onclick="filterProducts('tshirt',this)">تيشيرتات</button>
+        <button onclick="filterProducts('shirt',this)">قمصان</button>
+        <button onclick="filterProducts('pants',this)">بناطيل</button>
+        <button onclick="filterProducts('jacket',this)">جواكت</button>
+        <button onclick="filterProducts('hoodie',this)">هوديز</button>
+        <button onclick="filterProducts('short',this)">شورتات</button>
+        <button onclick="filterProducts('shoes',this)">أحذية</button>
+    </div>
+    <p class="results-count" id="resultsCount" aria-live="polite"></p>
+
+    <div class="products" id="productList"><div class="loading">جاري تحميل المنتجات...</div></div>
+</section>
+
+<section class="about" id="about">
+    <h2>عن Veyro</h2>
+    <p>Veyro متجر ملابس رجالي عصري. نقدم تشكيلة متنوعة من التيشيرتات والقمصان والبناطيل والجواكت والهوديز والشورتات والأحذية.</p>
+</section>
+
+<footer>
+    © 2026 Veyro — جميع الحقوق محفوظة
+    <br><a class="support-link" href="https://wa.me/201015020363" target="_blank" rel="noopener">الدعم والطلبات: 01015020363</a>
+</footer>
+
+<!-- PRODUCT DETAILS -->
+<div class="modal" id="productModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('productModal')">✕</button>
+        <div id="productDetails"></div>
+    </div>
+</div>
+
+<!-- CART -->
+<div class="modal" id="cartModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('cartModal')">✕</button>
+        <h2>🛒 سلة Veyro</h2><br>
+        <div id="cartItems"></div>
+
+        <div class="discount-box">
+            <input id="discountInput" placeholder="كود الخصم (لو عندك)">
+            <button onclick="applyDiscount()">تطبيق</button>
+        </div>
+        <div id="discountMsg" class="discount-msg"></div>
+
+        <div style="margin-top:15px;">
+            <div class="totals-line"><span>الإجمالي الفرعي</span><span id="subtotalVal">0</span></div>
+            <div class="totals-line" id="discountLine" style="display:none;"><span>الخصم</span><span id="discountVal">0</span></div>
+            <div class="totals-line grand"><span>الإجمالي</span><span id="cartTotal">0</span> جنيه</div>
+        </div>
+
+        <button class="checkout" onclick="openCheckout()">إتمام الطلب</button>
+    </div>
+</div>
+
+<!-- FAVORITES -->
+<div class="modal" id="favoritesModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('favoritesModal')">✕</button>
+        <h2>❤️ المفضلة</h2><br>
+        <div id="favoriteItems"></div>
+    </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="modal" id="checkoutModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('checkoutModal')">✕</button>
+        <h2>📦 إتمام طلب Veyro</h2><br>
+
+        <div class="checkout-form">
+            <input id="customerName" placeholder="الاسم بالكامل">
+            <input id="customerPhone" placeholder="رقم الهاتف" type="tel">
+            <textarea id="customerAddress" placeholder="العنوان بالتفصيل (المحافظة - المنطقة - الشارع)"></textarea>
+
+            <div class="payment-methods" id="paymentMethods">
+                <label data-value="cash" onclick="selectPayment(this,'cash')">
+                    <input type="radio" name="pay" checked> 💵 الدفع عند الاستلام
+                </label>
+                <label data-value="vodafone" onclick="selectPayment(this,'vodafone')">
+                    <input type="radio" name="pay"> 📱 فودافون كاش
+                </label>
+                <label data-value="instapay" onclick="selectPayment(this,'instapay')">
+                    <input type="radio" name="pay"> 🏦 إنستاباي
+                </label>
+            </div>
+
+            <div class="payment-note" id="payNote"></div>
+            <input id="paymentRef" placeholder="رقم عملية التحويل أو الرقم اللي حوّلت منه" style="display:none">
+
+            <div style="text-align:center;margin:10px 0;font-weight:bold;">
+                الإجمالي المطلوب دفعه: <span id="checkoutTotal">0</span> جنيه
+            </div>
+
+            <p class="order-route-note" id="orderRouteNote"></p>
+            <button class="submit" id="submitOrderBtn" onclick="sendOrder()">تأكيد الطلب</button>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER SUCCESS -->
+<div class="modal" id="successModal">
+    <div class="modal-box">
+        <button class="close" onclick="closeModal('successModal')">✕</button>
+        <div class="order-success">
+            <div style="font-size:50px;">✅</div>
+            <h2>تم استلام طلبك بنجاح</h2>
+            <div class="num" id="orderNumberShown"></div>
+            <p>احتفظ برقم الطلب ده. هنتواصل معاك على رقم الهاتف اللي كتبته لتأكيد الطلب.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = "";
+const STORE_KEY = "veyroStoreLocal";
+const DEFAULT_DISCOUNTS = [
+    { code: "WELCOME10", type: "percentage", value: 10, minOrder: 200, maxUses: 9999, active: true },
+    { code: "SAVE50", type: "fixed", value: 50, minOrder: 500, maxUses: 9999, active: true }
+];
+const CFG = {};
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem("veyroCart")) || [];
+let favorites = JSON.parse(localStorage.getItem("veyroFavorites")) || [];
+let appliedDiscount = null;
+let selectedPayment = "cash";
+
+function getStoreData(){
+    try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) return { products: [], discounts: DEFAULT_DISCOUNTS, orders: [] };
+        const parsed = JSON.parse(raw);
+        return {
+            products: Array.isArray(parsed.products) ? parsed.products : [],
+            discounts: Array.isArray(parsed.discounts) && parsed.discounts.length ? parsed.discounts : DEFAULT_DISCOUNTS,
+            orders: Array.isArray(parsed.orders) ? parsed.orders : []
+        };
+    } catch (e) {
+        return { products: [], discounts: DEFAULT_DISCOUNTS, orders: [] };
+    }
+}
+
+function saveStoreData(data){
+    localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+async function hydrateLocalProducts(){
+    const store = getStoreData();
+    try {
+        const [productResponse, discountResponse] = await Promise.all([fetch("/api/products"), fetch("/api/discounts")]);
+        if (!productResponse.ok || !discountResponse.ok) throw new Error("تعذر تحميل بيانات المتجر");
+        const [serverProducts, serverDiscounts] = await Promise.all([productResponse.json(), discountResponse.json()]);
+        if (Array.isArray(serverProducts)) {
+            products = serverProducts;
+            saveStoreData({ ...store, products: serverProducts, discounts: Array.isArray(serverDiscounts) && serverDiscounts.length ? serverDiscounts : store.discounts });
+            return products;
+        }
+    } catch (e) {
+        // Fall back to the cached catalogue when the server is unavailable.
+    }
+    if (store.products.length) {
+        products = store.products.filter(p => p.active !== false);
+        return products;
+    }
+
+    try {
+        const res = await fetch("data/db.json");
+        if (!res.ok) throw new Error("db missing");
+        const data = await res.json();
+        if (Array.isArray(data.products)) {
+            const productsList = data.products.filter(p => p.active !== false);
+            products = productsList;
+            saveStoreData({ ...store, products: productsList });
+            return products;
+        }
+    } catch (e) {
+        // ignore and keep empty list if product JSON is unavailable
+    }
+
+    products = [];
+    return products;
+}
+
+function validateLocalDiscount(code, subtotal){
+    const cleanCode = String(code || "").trim().toUpperCase();
+    if (!cleanCode) return { valid: false, message: "لا يوجد كود" };
+    const store = getStoreData();
+    const discount = (store.discounts || DEFAULT_DISCOUNTS).find(d => d.code && d.code.toUpperCase() === cleanCode && d.active !== false);
+    if (!discount) return { valid: false, message: "كود خصم غير صالح" };
+    if (discount.maxUses && Number(discount.usedCount || 0) >= Number(discount.maxUses)) return { valid: false, message: "تم استخدام هذا الكود بالكامل" };
+    if (discount.expiresAt && Date.parse(discount.expiresAt) < Date.now()) return { valid: false, message: "انتهت صلاحية كود الخصم" };
+    if (discount.minOrder && subtotal < Number(discount.minOrder)) return { valid: false, message: `الحد الأدنى للطلب ${discount.minOrder} جنيه` };
+    if (discount.type === "percentage") return { valid: true, discountAmount: Math.min(Math.round((subtotal * Number(discount.value)) / 100), subtotal), code: cleanCode };
+    return { valid: true, discountAmount: Math.min(Number(discount.value || 0), subtotal), code: cleanCode };
+}
+
+function saveOrderLocally(orderData){
+    const store = getStoreData();
+    store.orders.push(orderData);
+    saveStoreData(store);
+}
+
+async function loadProducts(){
+    try {
+        const list = await hydrateLocalProducts();
+        showProducts(list);
+    } catch (e) {
+        document.getElementById("productList").innerHTML = '<div class="loading">تعذر تحميل المنتجات، تأكد إن السيرفر شغال.</div>';
+    }
+}
+
+function showProducts(list){
+    const box = document.getElementById("productList");
+    document.getElementById("resultsCount").textContent = `${list.length} منتج`;
+    box.innerHTML = "";
+    if(list.length === 0){
+        box.innerHTML = '<div class="loading">لا توجد منتجات مطابقة</div>';
+        return;
+    }
+    list.forEach(product=>{
+        const fav = favorites.includes(product.id);
+        const outOfStock = product.stock <= 0;
+        box.innerHTML += `
+        <div class="product">
+            <div class="product-image">
+                <img src="${product.image}">
+                ${outOfStock ? '<div class="out-of-stock">نفدت الكمية</div>' : ''}
+                <button class="favorite ${fav?'active':''}" onclick="toggleFavorite(${product.id})">${fav?'♥':'♡'}</button>
+            </div>
+            <div class="product-info">
+                <h3>${product.name}</h3>
+                <div class="category">${product.categoryName}</div>
+                <div class="price">${product.salePrice && Number(product.salePrice) < Number(product.price) ? `<span class="old-price">${product.price} جنيه</span>` : ''}${product.salePrice && Number(product.salePrice) < Number(product.price) ? product.salePrice : product.price} جنيه</div>
+                <div class="product-buttons">
+                    <button class="details" onclick="showDetails(${product.id})">التفاصيل</button>
+                    <button class="add" ${outOfStock?'disabled':''} onclick="showDetails(${product.id})">اختار المقاس</button>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+function addToCart(id, size, color){
+    const product = products.find(p=>p.id===id);
+    if(!product) return;
+    if(!size || !color){showDetails(id);return;}
+    const stock=Number(product.stock);
+    if(Number.isFinite(stock)&&stock<=0) return;
+    const key = id + "_" + (size||"") + "_" + (color||"");
+    const item = cart.find(p=>p.key===key);
+    if(item){
+        if(Number.isFinite(stock)&&item.quantity>=stock){alert(`المتاح من المنتج ${stock} قطعة`);return;}
+        item.quantity++;
+    }
+    else{
+        cart.push({key, productId:id, name:product.name, image:product.image,
+                   price:product.salePrice && Number(product.salePrice) < Number(product.price) ? Number(product.salePrice) : product.price, quantity:1, size:size||null, color:color||null});
+    }
+    saveCart();
+    alert("✅ تمت إضافة المنتج إلى سلة Veyro");
+}
+
+function saveCart(){
+    localStorage.setItem("veyroCart", JSON.stringify(cart));
+    updateCounts();
+}
+
+function updateCounts(){
+    const count = cart.reduce((sum,item)=>sum+item.quantity,0);
+    document.getElementById("cartCount").innerText = count;
+    document.getElementById("favCount").innerText = favorites.length;
+}
+
+function openCart(){
+    document.getElementById("cartModal").style.display = "flex";
+    showCart();
+}
+
+function calcSubtotal(){
+    return cart.reduce((sum,item)=>sum + item.price*item.quantity, 0);
+}
+
+function showCart(){
+    const box = document.getElementById("cartItems");
+    box.innerHTML = "";
+    if(cart.length === 0){
+        box.innerHTML = '<div class="empty">🛒 سلة Veyro فارغة</div>';
+        document.getElementById("subtotalVal").innerText = 0;
+        document.getElementById("cartTotal").innerText = 0;
+        document.getElementById("discountLine").style.display = "none";
+        return;
+    }
+    cart.forEach((item,index)=>{
+        box.innerHTML += `
+        <div class="cart-item">
+            <img src="${item.image}">
+            <div class="cart-info">
+                <h4>${item.name} ${item.size?`(${item.size})`:''} ${item.color?`- ${item.color}`:''}</h4>
+                <div class="cart-price">${item.price} جنيه</div>
+                <div class="quantity">
+                    <button onclick="changeQuantity(${index},-1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="changeQuantity(${index},1)">+</button>
+                </div>
+            </div>
+            <button class="remove" onclick="removeFromCart(${index})">🗑️</button>
+        </div>`;
+    });
+    recalcTotals();
+}
+
+function recalcTotals(){
+    const subtotal = calcSubtotal();
+    document.getElementById("subtotalVal").innerText = subtotal;
+    let total = subtotal;
+    if(appliedDiscount){
+        document.getElementById("discountLine").style.display = "flex";
+        document.getElementById("discountVal").innerText = "-" + appliedDiscount.amount;
+        total = Math.max(0, subtotal - appliedDiscount.amount);
+    } else {
+        document.getElementById("discountLine").style.display = "none";
+    }
+    document.getElementById("cartTotal").innerText = total;
+    document.getElementById("checkoutTotal").innerText = total;
+}
+
+async function applyDiscount(){
+    const code = document.getElementById("discountInput").value.trim();
+    const msg = document.getElementById("discountMsg");
+    if(!code){ msg.textContent=""; appliedDiscount=null; recalcTotals(); return; }
+    const subtotal = calcSubtotal();
+    const result = validateLocalDiscount(code, subtotal);
+    if(result.valid){
+        appliedDiscount = { code: result.code, amount: result.discountAmount };
+        msg.textContent = "✅ تم تطبيق كود الخصم";
+        msg.className = "discount-msg ok";
+    } else {
+        appliedDiscount = null;
+        msg.textContent = "❌ " + (result.message || "كود غير صالح");
+        msg.className = "discount-msg err";
+    }
+    recalcTotals();
+}
+
+function changeQuantity(index,change){
+    const item=cart[index];
+    const product=products.find(p=>p.id===item.productId);
+    const stock=Number(product&&product.stock);
+    if(change>0&&Number.isFinite(stock)&&item.quantity>=stock){alert(`المتاح من المنتج ${stock} قطعة`);return;}
+    cart[index].quantity += change;
+    if(cart[index].quantity<=0) cart.splice(index,1);
+    saveCart(); showCart();
+}
+
+function removeFromCart(index){
+    cart.splice(index,1);
+    saveCart(); showCart();
+}
+
+function toggleFavorite(id){
+    if(favorites.includes(id)) favorites = favorites.filter(x=>x!==id);
+    else favorites.push(id);
+    localStorage.setItem("veyroFavorites", JSON.stringify(favorites));
+    updateCounts(); showProducts(products);
+}
+
+function openFavorites(){
+    document.getElementById("favoritesModal").style.display = "flex";
+    const box = document.getElementById("favoriteItems");
+    const list = products.filter(p=>favorites.includes(p.id));
+    if(list.length===0){ box.innerHTML = '<div class="empty">❤️ لا توجد منتجات في المفضلة</div>'; return; }
+    box.innerHTML = "";
+    list.forEach(product=>{
+        box.innerHTML += `
+        <div class="cart-item">
+            <img src="${product.image}">
+            <div class="cart-info">
+                <h4>${product.name}</h4>
+                <div class="cart-price">${product.price} جنيه</div>
+                <button class="add" onclick="closeModal('favoritesModal');showDetails(${product.id})">اختار المقاس</button>
+            </div>
+        </div>`;
+    });
+}
+
+function showDetails(id){
+    const product = products.find(p=>p.id===id);
+    document.getElementById("productModal").style.display = "flex";
+    const sizesOpts = (product.sizes||["S","M","L","XL"]).map(s=>`<option>${s}</option>`).join("");
+    const colorsOpts = (product.colors||["أسود","أبيض"]).map(c=>`<option>${c}</option>`).join("");
+    document.getElementById("productDetails").innerHTML = `
+        <div class="details-content">
+            <div><img src="${product.image}"></div>
+            <div>
+                <h2>${product.name}</h2><br>
+                <div class="price">${product.salePrice && Number(product.salePrice) < Number(product.price) ? `<span class="old-price">${product.price} جنيه</span>` : ''}${product.salePrice && Number(product.salePrice) < Number(product.price) ? product.salePrice : product.price} جنيه</div>
+                <p>${product.description||""}</p>
+                <div class="select-box"><label>المقاس</label><select id="size">${sizesOpts}</select></div>
+                <div class="select-box"><label>اللون</label><select id="color">${colorsOpts}</select></div>
+                <button class="big-add" ${product.stock<=0?'disabled':''} onclick="
+                    addToCart(${product.id}, document.getElementById('size').value, document.getElementById('color').value);
+                    closeModal('productModal');
+                ">🛒 أضف إلى سلة Veyro</button>
+            </div>
+        </div>`;
+}
+
+function searchProducts(){
+    const value = document.getElementById("search").value.toLowerCase();
+    showProducts(products.filter(p=>p.name.toLowerCase().includes(value)));
+}
+
+function filterProducts(category,button){
+    document.querySelectorAll(".filters button").forEach(btn=>btn.classList.remove("active"));
+    button.classList.add("active");
+    if(category==="all"){ showProducts(products); return; }
+    showProducts(products.filter(p=>p.category===category));
+}
+
+function openCheckout(){
+    if(cart.length===0){ alert("🛒 سلة Veyro فارغة"); return; }
+    closeModal("cartModal");
+    document.getElementById("checkoutModal").style.display = "flex";
+    document.getElementById("submitOrderBtn").textContent="تأكيد الطلب";
+    document.getElementById("orderRouteNote").textContent="يتم التحقق من السعر والمخزون على الخادم قبل تسجيل الطلب.";
+    document.getElementById("checkoutTotal").innerText = document.getElementById("cartTotal").innerText;
+    selectPayment(document.querySelector('.payment-methods label[data-value="cash"]'), "cash");
+}
+
+function selectPayment(el, value){
+    selectedPayment = value;
+    document.querySelectorAll(".payment-methods label").forEach(l=>l.classList.remove("selected"));
+    el.classList.add("selected");
+    el.querySelector('input').checked = true;
+    const note = document.getElementById("payNote");
+    if(value==="vodafone"){
+        note.style.display="block";
+        note.innerHTML = "حوّل قيمة الطلب على رقم فودافون كاش: <b>01000000000</b> واكتب اسمك في الطلب، وهنأكد الطلب بعد التحويل.";
+    }else if(value==="instapay"){
+        note.style.display="block";
+        note.innerHTML = "حوّل قيمة الطلب عبر إنستاباي على: <b>veyro@instapay</b> وهنأكد الطلب بعد التحويل.";
+    }else{
+        note.style.display="none";
+    }
+}
+
+async function sendOrder(){
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
+    const paymentRef = document.getElementById("paymentRef").value.trim();
+
+    if(!name || !phone || !address){
+        alert("⚠️ من فضلك املأ جميع البيانات"); return;
+    }
+    if(selectedPayment !== "cash" && !paymentRef){
+        alert("⚠️ اكتب رقم عملية التحويل أو الرقم اللي حوّلت منه"); return;
+    }
+
+    const btn = document.getElementById("submitOrderBtn");
+    btn.disabled = true; btn.textContent = "جاري إرسال الطلب...";
+
+    try {
+        const orderNumber = `VY-${String(Date.now()).slice(-6)}`;
+        const order = {
+            id: String(Date.now()),
+            orderNumber,
+            customerName: name,
+            customerPhone: phone,
+            customerAddress: address,
+            items: cart.map(i => ({
+                productId: i.productId,
+                quantity: i.quantity,
+                size: i.size,
+                color: i.color,
+                name: i.name,
+                price: i.price,
+                lineTotal: i.price * i.quantity
+            })),
+            paymentMethod: selectedPayment,
+            paymentRef: paymentRef || null,
+            paymentStatus: selectedPayment === "cash" ? "تم استلام الدفع" : "بانتظار التأكيد",
+            status: "قيد المراجعة",
+            total: Number(document.getElementById("checkoutTotal").innerText || 0),
+            subtotal: Number(document.getElementById("subtotalVal").innerText || 0),
+            discountCode: appliedDiscount ? appliedDiscount.code : null,
+            discountAmount: appliedDiscount ? appliedDiscount.amount : 0,
+            createdAt: new Date().toISOString()
+        };
+        saveOrderLocally(order);
+
+        cart = []; appliedDiscount = null;
+        saveCart();
+        closeModal("checkoutModal");
+        document.getElementById("orderNumberShown").innerText = "#" + orderNumber;
+        document.getElementById("successModal").style.display = "flex";
+    } catch (e) {
+        alert("⚠️ تعذر إرسال الطلب، تأكد من اتصال السيرفر");
+    } finally {
+        btn.disabled = false; btn.textContent = "تأكيد الطلب";
+    }
+}
+
+function closeModal(id){ document.getElementById(id).style.display = "none"; }
+function scrollProducts(){ document.getElementById("products").scrollIntoView({behavior:"smooth"}); }
+
+loadProducts();
+updateCounts();
+</script>
+
+
+<script>
+/* ===== اللغات (عربي / English) — الترجمة بتتطبق على الصفحة كلها تلقائي، ولإضافة لغة جديدة زوّد Dictionary تاني ===== */
+(function(){
+const D={"en":{"أحدث الملابس الرجالي بأسلوب مختلف":"Latest menswear, a different style","اختار القطعة المناسبة ليك":"Pick the piece that suits you","العنوان بالتفصيل (المحافظة - المنطقة - الشارع)":"Full address (governorate - area - street)","احتفظ برقم الطلب ده. هنتواصل معاك على رقم الهاتف اللي كتبته لتأكيد الطلب.":"Keep this order number. We will call you on your phone number to confirm.","ثم اكتب رقم العملية بالأسفل. هنأكد طلبك بعد التأكد من التحويل.":"then enter the transaction reference below. We confirm your order after verifying the transfer.","Veyro متجر ملابس رجالي عصري. نقدم تشكيلة متنوعة من التيشيرتات والقمصان والبناطيل والجواكت والهوديز والشورتات والأحذية.":"Veyro is a modern menswear store offering T-shirts, shirts, pants, jackets, hoodies, shorts and shoes.","رقم عملية التحويل أو الرقم اللي حوّلت منه":"Transfer reference or the number you sent from","اكتب رقم عملية التحويل أو الرقم اللي حوّلت منه":"Enter the transfer reference or the number you sent from","الحد الأدنى للطلب لاستخدام هذا الكود":"Minimum order for this code:","© 2026 Veyro — جميع الحقوق محفوظة":"© 2026 Veyro — All rights reserved","تعذر تحميل المنتجات، تأكد إن السيرفر شغال.":"Could not load products.","تعذر إرسال الطلب، تأكد من اتصال السيرفر":"Could not send the order, check your connection","من فضلك أدخل الاسم ورقم الهاتف والعنوان":"Please enter name, phone and address","على فودافون كاش رقم:":"to Vodafone Cash number:","الإجمالي المطلوب دفعه:":"Amount due:","تمت إضافة المنتج إلى سلة Veyro":"Added to your Veyro cart","لا توجد منتجات في المفضلة":"No favorites yet","جاري تحميل المنتجات...":"Loading products...","من فضلك املأ جميع البيانات":"Please fill in all fields","اختار طريقة دفع صحيحة":"Choose a valid payment method","رقم الهاتف غير صحيح":"Invalid phone number","كود الخصم (لو عندك)":"Discount code (if any)","تم استخدام هذا الكود بالكامل":"This code is fully used","تم استلام طلبك بنجاح":"Your order has been received","الكمية المتاحة من":"Available quantity of","لا توجد منتجات مطابقة":"No matching products","جاري إرسال الطلب...":"Sending order...","انتهت صلاحية كود الخصم":"Code expired","كود الخصم غير موجود":"Code not found","كود الخصم غير مفعّل":"Code inactive","تعذر التحقق من الكود الآن":"Could not verify the code","أضف إلى سلة Veyro":"Add to Veyro cart","إتمام طلب Veyro":"Complete your Veyro order","سلة Veyro فارغة":"Your Veyro cart is empty","الإجمالي الفرعي":"Subtotal","الدفع عند الاستلام":"Cash on delivery","على إنستاباي:":"to InstaPay:","تم تطبيق كود الخصم":"Discount applied","كود غير صالح":"Invalid code","منتجات Veyro":"Veyro Products","الاسم بالكامل":"Full name","ابحث عن منتج...":"Search for a product...","السلة فارغة":"Cart is empty","نفدت الكمية":"Out of stock","إتمام الطلب":"Checkout","تأكيد الطلب":"Confirm order","أضف للسلة":"Add to cart","سلة Veyro":"Veyro Cart","فقط":"only","رقم الهاتف":"Phone number","الرئيسية":"Home","المنتجات":"Products","عن Veyro":"About Veyro","تسوق الآن":"Shop now","المفضلة":"Favorites","التفاصيل":"Details","المقاس":"Size","اللون":"Color","تطبيق":"Apply","الخصم":"Discount","الإجمالي":"Total","فودافون كاش":"Vodafone Cash","إنستاباي":"InstaPay","ادفع":"Pay","جنيه":"EGP","أضف":"Add","تيشيرتات":"T-Shirts","قمصان":"Shirts","بناطيل":"Pants","جواكت":"Jackets","هوديز":"Hoodies","شورتات":"Shorts","أحذية":"Shoes"}};
+const X={"en":{"الكل":"All","أسود":"Black","أبيض":"White","أزرق":"Blue","رمادي":"Gray"}};
+const AR=/[\u0600-\u06FF]/;
+let lang=localStorage.getItem("veyroLang")||"ar";
+const keys=l=>Object.keys(D[l]||{}).sort((a,b)=>b.length-a.length);
+function tr(s){
+  if(lang==="ar"||!D[lang])return s;
+  const t=s.trim(); if(X[lang][t])return s.replace(t,X[lang][t]);
+  let o=s; for(const k of keys(lang)) if(o.includes(k)) o=o.split(k).join(D[lang][k]);
+  return o;
+}
+function run(){
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+  while(n=w.nextNode()){
+    if(n._a===undefined){ if(!AR.test(n.nodeValue))continue; n._a=n.nodeValue; }
+    const v=tr(n._a); if(v!==n.nodeValue)n.nodeValue=v;
+  }
+  document.querySelectorAll("[placeholder]").forEach(e=>{ if(e._p===undefined)e._p=e.getAttribute("placeholder"); e.setAttribute("placeholder",tr(e._p)); });
+}
+let q=false;
+new MutationObserver(()=>{ if(q||lang==="ar")return; q=true; requestAnimationFrame(()=>{q=false;run();}); }).observe(document.body,{childList:true,subtree:true});
+function setLang(l){
+  lang=l; localStorage.setItem("veyroLang",l);
+  document.documentElement.lang=l; document.documentElement.dir=l==="ar"?"rtl":"ltr";
+  document.getElementById("langBtn").textContent=l==="ar"?"EN":"عربي";
+  run();
+}
+window.toggleLang=()=>setLang(lang==="ar"?"en":"ar");
+window.tr=tr;
+setLang(lang);
+
+/* ===== رسائل + toast ===== */
+const _al=window.alert.bind(window);
+function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),2200);}
+window.alert=m=>{m=String(m);if(m.startsWith("✅"))return toast(tr(m.replace("✅","").trim()));_al(tr(m));};
+document.addEventListener("error",e=>{if(e.target.tagName==="IMG"&&!e.target.dataset.f){e.target.dataset.f=1;e.target.src="/logo-icon.svg";}},true);
+
+/* ===== البحث + الفلتر مع بعض (كانوا بيلغوا بعض) ===== */
+const F={cat:"all",q:"",sort:"featured"};
+function applyF(){
+    const list=products.filter(p=>(F.cat==="all"||p.category===F.cat)&&p.name.toLowerCase().includes(F.q));
+    if(F.sort==="price-asc")list.sort((a,b)=>Number(a.salePrice||a.price)-Number(b.salePrice||b.price));
+    if(F.sort==="price-desc")list.sort((a,b)=>Number(b.salePrice||b.price)-Number(a.salePrice||a.price));
+    if(F.sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+    showProducts(list);
+}
+window.searchProducts=()=>{F.q=document.getElementById("search").value.toLowerCase().trim();applyF();};
+window.filterProducts=(c,b)=>{document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");F.cat=c;applyF();};
+window.sortProducts=value=>{F.sort=value;applyF();};
+
+/* ===== الدفع: الأرقام من السيرفر + رقم عملية التحويل إجباري ===== */
+let CFG=JSON.parse(localStorage.getItem("veyroPaymentSettings")||"{}");
+const pm=v=>document.querySelector('.payment-methods [data-value="'+v+'"]');
+function applyPaymentSettings(settings){
+    CFG=settings||{};
+    pm("vodafone").style.display=CFG.vodafone?"":"none";
+    pm("instapay").style.display=CFG.instapay?"":"none";
+    const link=document.querySelector(".support-link");
+    if(CFG.supportPhone&&link){
+        const digits=CFG.supportPhone.replace(/\D/g,"");
+        link.href="https://wa.me/"+(digits.startsWith("0")?"20"+digits.slice(1):digits);
+        link.textContent="الدعم والطلبات: "+CFG.supportPhone;
+    }
+}
+applyPaymentSettings(CFG);
+fetch("/api/config").then(response=>response.ok?response.json():null).then(settings=>{if(settings){CFG=settings;localStorage.setItem("veyroPaymentSettings",JSON.stringify(CFG));applyPaymentSettings(CFG);}}).catch(()=>{});
+window.selectPayment=(el,v)=>{
+  selectedPayment=v;
+  document.querySelectorAll(".payment-methods label").forEach(l=>l.classList.remove("selected"));
+  el.classList.add("selected"); el.querySelector("input").checked=true;
+  const n=document.getElementById("payNote"),r=document.getElementById("paymentRef"),t=document.getElementById("checkoutTotal").innerText;
+  const to=v==="vodafone"?"على فودافون كاش رقم: <b>"+(CFG.vodafone||"")+"</b>":v==="instapay"?"على إنستاباي: <b>"+(CFG.instapay||"")+"</b>":"";
+  n.style.display=r.style.display=to?"block":"none";
+  n.innerHTML=to?"ادفع <b>"+t+"</b> جنيه "+to+" ثم اكتب رقم العملية بالأسفل. هنأكد طلبك بعد التأكد من التحويل.":"";
+};
+window.sendOrder=async function(){
+  const name=customerName.value.trim(),phone=customerPhone.value.trim(),address=customerAddress.value.trim(),ref=paymentRef.value.trim();
+  if(!name||!phone||!address){alert("⚠️ من فضلك املأ جميع البيانات");return;}
+  if(selectedPayment!=="cash"&&!ref){alert("⚠️ اكتب رقم عملية التحويل أو الرقم اللي حوّلت منه");return;}
+  const btn=submitOrderBtn;btn.disabled=true;btn.textContent=tr("جاري إرسال الطلب...");
+    const orderId=String(Date.now());
+    const order={
+        id:orderId,
+        orderNumber:`VY-${orderId.slice(-6)}`,
+        customerName:name,
+        customerPhone:phone,
+        customerAddress:address,
+        items:cart.map(i=>({productId:i.productId,quantity:i.quantity,size:i.size,color:i.color,name:i.name,price:i.price,lineTotal:i.price*i.quantity})),
+        paymentMethod:selectedPayment,
+        paymentRef:ref||null,
+        paymentStatus:selectedPayment==="cash"?"الدفع عند الاستلام":"بانتظار التأكيد",
+        status:"قيد المراجعة",
+        total:Number(checkoutTotal.innerText||0),
+        subtotal:Number(subtotalVal.innerText||0),
+        discountCode:appliedDiscount?appliedDiscount.code:null,
+        discountAmount:appliedDiscount?appliedDiscount.amount:0,
+        createdAt:new Date().toISOString()
+    };
+    const sendToSupport=()=>{
+        const settings=JSON.parse(localStorage.getItem("veyroPaymentSettings")||"{}");
+        const digits=String(settings.supportPhone||"01015020363").replace(/\D/g,"");
+        const supportNumber=digits.startsWith("0")?"20"+digits.slice(1):digits;
+        const lines=order.items.map(item=>`- ${item.name} (${item.size||"بدون مقاس"}, ${item.color||"بدون لون"}) × ${item.quantity}`);
+        const message=[`طلب جديد من Veyro #${order.orderNumber}`,`الاسم: ${name}`,`الهاتف: ${phone}`,`العنوان: ${address}`,`الدفع: ${selectedPayment}`,`رقم التحويل: ${ref||"-"}`,`كود الخصم: ${order.discountCode||"-"}`,...lines,`الإجمالي: ${order.total} جنيه`].join("\n");
+        window.location.href=`https://wa.me/${supportNumber}?text=${encodeURIComponent(message)}`;
+    };
+  try{
+        const response=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+            customerName:name,customerPhone:phone,customerAddress:address,paymentMethod:selectedPayment,paymentRef:ref,
+            items:cart.map(i=>({productId:i.productId,quantity:i.quantity,size:i.size,color:i.color})),
+            discountCode:appliedDiscount?appliedDiscount.code:null
+        })});
+        const data=await response.json();
+        if(!response.ok){alert("⚠️ "+(data.error||"تعذر تسجيل الطلب"));return;}
+    cart=[];appliedDiscount=null;saveCart();loadProducts();
+        closeModal("checkoutModal");orderNumberShown.innerText="#"+data.orderNumber;successModal.style.display="flex";
+    }catch(e){sendToSupport();}
+  finally{btn.disabled=false;btn.textContent=tr("تأكيد الطلب");}
+};
+})();
+</script>
+
+<script>
+let storeInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();storeInstallPrompt=event;document.getElementById("installStoreBtn").style.display="inline-block";});
+window.installStoreApp=async function(){if(!storeInstallPrompt)return;storeInstallPrompt.prompt();await storeInstallPrompt.userChoice;storeInstallPrompt=null;document.getElementById("installStoreBtn").style.display="none";};
+if("serviceWorker" in navigator)navigator.serviceWorker.register("/app-sw.js").catch(()=>{});
+</script>
+</body>
+</html>
