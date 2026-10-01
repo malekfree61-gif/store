@@ -379,6 +379,18 @@ async function doLogin(){
     }
 }
 
+async function configureLoginMode(){
+    try{
+        const response = await fetch("/api/admin/auth-mode");
+        if(!response.ok) return;
+        const settings = await response.json();
+        const passwordInput = document.getElementById("loginPassword");
+        passwordInput.hidden = !settings.passwordRequired;
+        passwordInput.disabled = !settings.passwordRequired;
+    }catch(e){}
+}
+configureLoginMode();
+
 async function logout(){
     await fetch("/api/admin/logout", { method: "POST" }).catch(() => {});
     document.getElementById("app").style.display = "none";
