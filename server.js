@@ -94,6 +94,11 @@ function passwordMatches(candidate) {
     return safeEqual(crypto.scryptSync(candidate, salt, 64), crypto.scryptSync(expected, salt, 64));
 }
 
+function isLocalPreview(req) {
+    if (process.env.NODE_ENV === "production") return false;
+    return new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1"]).has(req.socket.remoteAddress);
+}
+
 function sessionCookie(value, maxAge) {
     const parts = [`veyro_session=${value}`, "Path=/", "HttpOnly", "SameSite=Strict", `Max-Age=${maxAge}`];
     if (process.env.NODE_ENV === "production") parts.push("Secure");
@@ -125,6 +130,7 @@ const loginLimiter = rateLimit({
 });
 
 app.get("/api/health", (req, res) => res.json({ ok: true, database: "sqlite" }));
+app.get("/api/admin/auth-mode", (req, res) => res.json({ passwordRequired: !isLocalPreview(req) }));
 
 app.get("/api/products", (req, res) => {
     res.json(readCollection("products").filter(product => product.active !== false));
@@ -229,8 +235,9 @@ app.post("/api/admin/login", loginLimiter, (req, res) => {
     const email = String(req.body?.email || "").trim().toLowerCase();
     const password = String(req.body?.password || "");
     const adminEmail = String(process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-    if (!adminEmail || !process.env.ADMIN_PASSWORD) return sendError(res, 503, "إعدادات دخول الإدارة غير مكتملة على الخادم.", "ADMIN_NOT_CONFIGURED");
-    if (!safeEqual(email, adminEmail) || !passwordMatches(password)) return sendError(res, 401, "البريد أو كلمة المرور غير صحيحة.", "INVALID_CREDENTIALS");
+    const localPreview = isLocalPreview(req);
+    if (!adminEmail || (!localPreview && !process.env.ADMIN_PASSWORD)) return sendError(res, 503, "إعدادات دخول الإدارة غير مكتملة على الخادم.", "ADMIN_NOT_CONFIGURED");
+    if (!safeEqual(email, adminEmail) || (!localPreview && !passwordMatches(password))) return sendError(res, 401, "البريد أو كلمة المرور غير صحيحة.", "INVALID_CREDENTIALS");
 
     const id = crypto.randomBytes(32).toString("base64url");
     const hashedId = crypto.createHash("sha256").update(id).digest("hex");
