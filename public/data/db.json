@@ -1,0 +1,457 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "تيشيرت أبيض كلاسيك",
+      "category": "tshirt",
+      "categoryName": "تيشيرتات",
+      "price": 350,
+      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 2,
+      "name": "تيشيرت أسود",
+      "category": "tshirt",
+      "categoryName": "تيشيرتات",
+      "price": 390,
+      "image": "https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 3,
+      "name": "تيشيرت كاجوال",
+      "category": "tshirt",
+      "categoryName": "تيشيرتات",
+      "price": 420,
+      "image": "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 4,
+      "name": "قميص أبيض",
+      "category": "shirt",
+      "categoryName": "قمصان",
+      "price": 650,
+      "image": "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 5,
+      "name": "قميص أزرق",
+      "category": "shirt",
+      "categoryName": "قمصان",
+      "price": 700,
+      "image": "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 6,
+      "name": "قميص كاجوال",
+      "category": "shirt",
+      "categoryName": "قمصان",
+      "price": 590,
+      "image": "https://images.unsplash.com/photo-1626497764746-6dc36546b388?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 7,
+      "name": "جينز أزرق",
+      "category": "pants",
+      "categoryName": "بناطيل",
+      "price": 750,
+      "image": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 8,
+      "name": "بنطلون أسود",
+      "category": "pants",
+      "categoryName": "بناطيل",
+      "price": 800,
+      "image": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 9,
+      "name": "بنطلون كاجوال",
+      "category": "pants",
+      "categoryName": "بناطيل",
+      "price": 690,
+      "image": "https://images.unsplash.com/photo-1555689502-c4b22d76c56f?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 10,
+      "name": "جاكت جلد",
+      "category": "jacket",
+      "categoryName": "جواكت",
+      "price": 1500,
+      "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 11,
+      "name": "جاكت شتوي",
+      "category": "jacket",
+      "categoryName": "جواكت",
+      "price": 1300,
+      "image": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 12,
+      "name": "هودي أسود",
+      "category": "hoodie",
+      "categoryName": "هوديز",
+      "price": 850,
+      "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 13,
+      "name": "هودي رمادي",
+      "category": "hoodie",
+      "categoryName": "هوديز",
+      "price": 800,
+      "image": "https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 14,
+      "name": "شورت رياضي",
+      "category": "short",
+      "categoryName": "شورتات",
+      "price": 400,
+      "image": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 15,
+      "name": "شورت كاجوال",
+      "category": "short",
+      "categoryName": "شورتات",
+      "price": 450,
+      "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 16,
+      "name": "كوتشي رياضي",
+      "category": "shoes",
+      "categoryName": "أحذية",
+      "price": 1200,
+      "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 17,
+      "name": "حذاء رجالي",
+      "category": "shoes",
+      "categoryName": "أحذية",
+      "price": 1100,
+      "image": "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    },
+    {
+      "id": 18,
+      "name": "كوتشي أبيض",
+      "category": "shoes",
+      "categoryName": "أحذية",
+      "price": 1000,
+      "image": "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=600&q=80",
+      "description": "منتج من Veyro بتصميم عصري ومناسب للاستخدام اليومي.",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "أسود",
+        "أبيض",
+        "أزرق",
+        "رمادي"
+      ],
+      "stock": 50,
+      "active": true,
+      "createdAt": "2026-09-24T13:18:47.486Z"
+    }
+  ],
+  "orders": [],
+  "discounts": [],
+  "nextOrderNumber": 1001
+}
